@@ -1629,9 +1629,9 @@ a {
 }
 
       .sidebar {
-        width: undefined;
+        width: 300px;
       }
       .main-container {
-        margin-left: undefined;
+        margin-left: 300px;
       }
     
