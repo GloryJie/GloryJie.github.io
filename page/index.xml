@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Pages on JieR的随想记录</title>
+        <link>https://gloryjie.github.io/page/</link>
+        <description>Recent content in Pages on JieR的随想记录</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Thu, 04 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://gloryjie.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>标签</title>
+        <link>https://gloryjie.github.io/tags/</link>
+        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://gloryjie.github.io/tags/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>关于我</title>
+        <link>https://gloryjie.github.io/about/</link>
+        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://gloryjie.github.io/about/</guid>
+        <description>&lt;p&gt;一个&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>归档</title>
+        <link>https://gloryjie.github.io/archives/</link>
+        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://gloryjie.github.io/archives/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>分类</title>
+        <link>https://gloryjie.github.io/categories/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://gloryjie.github.io/categories/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>搜索</title>
+        <link>https://gloryjie.github.io/search/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://gloryjie.github.io/search/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>
