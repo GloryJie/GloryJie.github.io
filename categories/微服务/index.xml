@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>JieR的随想记录</title>
-        <link>https://gloryjie.github.io/</link>
-        <description>Recent content on JieR的随想记录</description>
+        <title>微服务 on JieR的随想记录</title>
+        <link>https://gloryjie.github.io/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+        <description>Recent content in 微服务 on JieR的随想记录</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Fri, 02 Feb 2024 11:18:46 +0800</lastBuildDate><atom:link href="https://gloryjie.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 02 Feb 2024 11:18:46 +0800</lastBuildDate><atom:link href="https://gloryjie.github.io/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Resilience4j-整合Springboot</title>
         <link>https://gloryjie.github.io/p/resilience4j-%E6%95%B4%E5%90%88springboot/</link>
         <pubDate>Fri, 02 Feb 2024 11:18:46 +0800</pubDate>
@@ -467,99 +467,6 @@
     &gt;How to configure to events in Resilience4j Spring starter&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        </item>
-        <item>
-        <title>2024年度计划</title>
-        <link>https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</link>
-        <pubDate>Thu, 04 Jan 2024 17:47:55 +0800</pubDate>
-        
-        <guid>https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</guid>
-        <description>&lt;img src="https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/cover.png" alt="Featured image of post 2024年度计划" /&gt;&lt;ul&gt;
-&lt;li&gt;交友：扩充圈子，多认识妹子，多花时间进行线上交流；舍得花钱打扮&lt;/li&gt;
-&lt;li&gt;阅读：非技术书籍20+本，技术书籍10+，网文1本&lt;/li&gt;
-&lt;li&gt;运动：践行干净增肌，8个月增肌、3个月减脂，目标65kg&lt;/li&gt;
-&lt;li&gt;游戏：打完5+游戏，死亡搁浅、只狼、艾尔登法环、ffe7等&lt;/li&gt;
-&lt;li&gt;技术提升：基础增强（网络、操作系统）、算法LC刷题100道、接触AIGC&lt;/li&gt;
-&lt;li&gt;技术课程：至少一门国外课程（看完并做完实验），例如MIT6.824、MIT6.S081&lt;/li&gt;
-&lt;li&gt;项目实践：设计一个个人项目并上线运行&lt;/li&gt;
-&lt;li&gt;投资理财：继续学习相关知识，在尽可能不增加资金的情况下，回本！&lt;/li&gt;
-&lt;li&gt;生活体验：出行游玩，如武功山、武汉、九寨沟&lt;/li&gt;
-&lt;li&gt;新技能：手机摄影&amp;amp;剪辑&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;习惯养成目标&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;12点前入睡，7点起&lt;/li&gt;
-&lt;li&gt;行路中，不玩手机&lt;/li&gt;
-&lt;li&gt;每周进行总结&lt;/li&gt;
-&lt;li&gt;每月1~2本书&lt;/li&gt;
-&lt;li&gt;降低拖延症&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        <item>
-        <title>标签</title>
-        <link>https://gloryjie.github.io/tags/</link>
-        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/tags/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>关于我</title>
-        <link>https://gloryjie.github.io/about/</link>
-        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/about/</guid>
-        <description>&lt;p&gt;一个&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>归档</title>
-        <link>https://gloryjie.github.io/archives/</link>
-        <pubDate>Thu, 04 Jan 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/archives/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Resilience4j</title>
-        <link>https://gloryjie.github.io/tags/resilience4j/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/tags/resilience4j/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>分类</title>
-        <link>https://gloryjie.github.io/categories/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/categories/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>年度计划</title>
-        <link>https://gloryjie.github.io/categories/%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/categories/%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>搜索</title>
-        <link>https://gloryjie.github.io/search/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/search/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>微服务</title>
-        <link>https://gloryjie.github.io/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://gloryjie.github.io/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
-        <description></description>
         </item>
         
     </channel>
