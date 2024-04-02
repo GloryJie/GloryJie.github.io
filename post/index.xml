@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Posts on JieR的随想记录</title>
+        <title>Posts on CoderJie</title>
         <link>https://gloryjie.github.io/post/</link>
-        <description>Recent content in Posts on JieR的随想记录</description>
+        <description>Recent content in Posts on CoderJie</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <lastBuildDate>Sun, 24 Mar 2024 21:37:07 +0800</lastBuildDate><atom:link href="https://gloryjie.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
@@ -15,7 +15,7 @@
         <description>&lt;img src="https://gloryjie.github.io/p/mit6824_lab1/cover.png" alt="Featured image of post MIT6824实验1-MapReduce设计" /&gt;&lt;blockquote&gt;
 &lt;p&gt;封面是《斗罗大陆2绝世唐门》中的凌落宸，用冰技能, 图片由AI生成，完成图片放在附录中&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;a name=&#34;AGqDa&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;课程首页以及实验说明相关介绍链接在附录中。&lt;/p&gt;
 &lt;h2 id=&#34;课程理解&#34;&gt;课程理解&lt;/h2&gt;
 &lt;p&gt;简单的说，就是用Go来实现一个单机多进程版本的MapReduce。(MapReduce计算模型可以去搜索相关文章了解)。会有如下两种类型的进程&lt;/p&gt;
 &lt;ul&gt;

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>计划 on JieR的随想记录</title>
-        <link>https://gloryjie.github.io/tags/%E8%AE%A1%E5%88%92/</link>
-        <description>Recent content in 计划 on JieR的随想记录</description>
+        <title>计划 on CoderJie</title>
+        <link>http://localhost:1313/tags/%E8%AE%A1%E5%88%92/</link>
+        <description>Recent content in 计划 on CoderJie</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Thu, 04 Jan 2024 17:47:55 +0800</lastBuildDate><atom:link href="https://gloryjie.github.io/tags/%E8%AE%A1%E5%88%92/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 04 Jan 2024 17:47:55 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/%E8%AE%A1%E5%88%92/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>2024年度计划</title>
-        <link>https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</link>
+        <link>http://localhost:1313/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</link>
         <pubDate>Thu, 04 Jan 2024 17:47:55 +0800</pubDate>
         
-        <guid>https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</guid>
-        <description>&lt;img src="https://gloryjie.github.io/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/cover.png" alt="Featured image of post 2024年度计划" /&gt;&lt;ul&gt;
+        <guid>http://localhost:1313/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/</guid>
+        <description>&lt;img src="http://localhost:1313/p/2024%E5%B9%B4%E5%BA%A6%E8%AE%A1%E5%88%92/cover.png" alt="Featured image of post 2024年度计划" /&gt;&lt;ul&gt;
 &lt;li&gt;交友：扩充圈子，多认识妹子，多花时间进行线上交流；舍得花钱打扮&lt;/li&gt;
 &lt;li&gt;阅读：非技术书籍20+本，技术书籍10+，网文1本&lt;/li&gt;
 &lt;li&gt;运动：践行干净增肌，8个月增肌、3个月减脂，目标65kg&lt;/li&gt;
