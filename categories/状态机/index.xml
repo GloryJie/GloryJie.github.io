@@ -13,7 +13,7 @@
         
         <guid>https://gloryjie.github.io/p/%E7%8A%B6%E6%80%81%E6%9C%BA%E7%AF%87%E4%B8%80%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3/</guid>
         <description>&lt;img src="https://gloryjie.github.io/p/%E7%8A%B6%E6%80%81%E6%9C%BA%E7%AF%87%E4%B8%80%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3/cover.png" alt="Featured image of post 状态机篇一：概念理解" /&gt;&lt;blockquote&gt;
-&lt;p&gt;封面来之《诛仙》48集，陆雪琪&lt;/p&gt;
+&lt;p&gt;封面来自《诛仙》48集，陆雪琪&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;状态通常是用来描述一个事务当前是处于一个什么阶段（状态），在日常生活中最常见的就是电气的开关状态了，如空调、风扇开关灯。而在通常的项目设计中都会应用到，最常见的就是订单状态了：待支付、已支付、已取消等状态。&lt;/p&gt;
 &lt;p&gt;有限状态机（Finite-state Machine，FSM），是表示有限个状态以及在这些状态之间的转移和动作等行为的数学计算模型。就是对现实事物运行状态管理进行抽象，形成了一套状态机的概念。&lt;/p&gt;
