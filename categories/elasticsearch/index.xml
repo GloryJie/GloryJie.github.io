@@ -116,7 +116,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id=&#34;结构扁平化&#34;&gt;结构扁平化&lt;/h3&gt;
-&lt;p&gt;&lt;font style=&#34;color:rgb(51, 51, 51);&#34;&gt;尽量减少 object 类型的使用，更建议将数据扁平化。越是复杂的数据结构，系统要处理的事情就越多，写入就越慢。而且 nested、parent-child 等数据类型，在查询时候性能也很差。&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;尽量减少 object 类型的使用，更建议将数据扁平化。越是复杂的数据结构，系统要处理的事情就越多，写入就越慢。而且 nested、parent-child 等数据类型，在查询时候性能也很差。&lt;/p&gt;
 &lt;h2 id=&#34;常见场景应用字段类型&#34;&gt;常见场景应用字段类型&lt;/h2&gt;
 &lt;p&gt;对于业务系统来说，设计表的字段的场景不是很多，会有一些常见的场景。这里列一些常见场景设计的字段，以及对应的es数据类型。&lt;/p&gt;
 &lt;table&gt;
