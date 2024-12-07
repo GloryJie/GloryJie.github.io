@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Elasticsearch on CoderJie</title>
+        <link>https://gloryjie.github.io/categories/elasticsearch/</link>
+        <description>Recent content in Elasticsearch on CoderJie</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Sat, 07 Dec 2024 11:08:38 +0800</lastBuildDate><atom:link href="https://gloryjie.github.io/categories/elasticsearch/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Es应用实践指南</title>
+        <link>https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/</link>
+        <pubDate>Sat, 07 Dec 2024 11:08:38 +0800</pubDate>
+        
+        <guid>https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/</guid>
+        <description>&lt;img src="https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover.jpeg" alt="Featured image of post Es应用实践指南" /&gt;&lt;blockquote&gt;
+&lt;p&gt;封面为《不良人》第六季中的尸祖降臣&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;ES常见的应用场景就是搜索，大多数业务系统的数据迁移到ES后，大都是等值、范围、like等，并未使用到match查询，相当于把ES搜索当做MySQL来使用。本文不会涉及到分词、搜索打分等场景，更倾向于常用数据的搜索。&lt;/p&gt;
+&lt;h2 id=&#34;业务服务和es的交互方式&#34;&gt;业务服务和ES的交互方式&lt;/h2&gt;
+&lt;p&gt;如何使用ES，会影响到Mapping的设计原则。在实践过程中，仅仅是把ES当做ID的筛选器。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在数据同步阶段，只把需要搜索的字段同步到es中，降低单个文档的大小&lt;/li&gt;
+&lt;li&gt;搜索阶段，通过es进行搜索，查询出id的集合，之后通过该id集合从MySQL中获取原始的数据源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;流程的示意图如下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92.png&#34;
+	width=&#34;1040&#34;
+	height=&#34;748&#34;
+	srcset=&#34;https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92_hu93fbb872bbcefb1fb735f657a8a7c353_52174_480x0_resize_box_3.png 480w, https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92_hu93fbb872bbcefb1fb735f657a8a7c353_52174_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;应用和ES的交互&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;139&#34;
+		data-flex-basis=&#34;333px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;ES的搜索流程中，有两个阶段：search、fetch。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;search阶段是从分片中搜索并获取相应文档id和其排序数据，在协调节点处理，生成结果集id&lt;/li&gt;
+&lt;li&gt;fetch阶段是将对应的结果集id，从id对应分片中获取实际的文档数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;从上述流程中，可以看到，&lt;strong&gt;只使用到了search阶段，而fetch阶段替换成业务服务自行获取。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这个&lt;u&gt;&lt;strong&gt;方案的优点就是数据实时性高，可以规避ES数据滞后问题。&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;h3 id=&#34;排序问题&#34;&gt;排序问题&lt;/h3&gt;
+&lt;p&gt;根据id批量从MySQL中获取数据，返回的顺序会错乱，所以需要根据原id的顺序进行调整即可。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;u&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;mapping设计&#34;&gt;mapping设计&lt;/h2&gt;
+&lt;p&gt;mapping设计好，可以减少不必要的计算和写入，降低索引大小。&lt;/p&gt;
+&lt;h3 id=&#34;禁用dynamic-mapping&#34;&gt;禁用Dynamic Mapping&lt;/h3&gt;
+&lt;p&gt;动态映射在创建索引时有三种配置值，&lt;u&gt;&lt;strong&gt;至少设置为false。&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;可选值&lt;/th&gt;
+&lt;th&gt;含义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;true&lt;/td&gt;
+&lt;td&gt;自动添加到mapping中，并且支持索引和搜索&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;runtime&lt;/td&gt;
+&lt;td&gt;新字段将会被作为runtime类型的filed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;false&lt;/td&gt;
+&lt;td&gt;不会添加到mapping中，不支持索引和搜索。不过仍然会保存在_source中。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;strict&lt;/td&gt;
+&lt;td&gt;如果发现新的field，会抛出异常&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;必须明确每个字段的数据类型，和其对应的属性配置，就类似于SQL的建表，严格确定结构。对于字段数据类型和其支持的属性配置，需要对ES有一定的熟悉程度，可以参考es的文档来进行设置，一般来说明确数据类型即可。&lt;/p&gt;
+&lt;h3 id=&#34;选择合适的数据类型&#34;&gt;选择合适的数据类型&lt;/h3&gt;
+&lt;p&gt;明确数据类型的时候，需要选择合适的数据类型，例如字符串类型的id、状态枚举等明确的值，选择keyword而不是text。&lt;/p&gt;
+&lt;h3 id=&#34;字段尽量少&#34;&gt;字段尽量少&lt;/h3&gt;
+&lt;p&gt;字段尽可能少，最好做到只保留需要参与检索的字段。因为es需要提前构建倒排索引，所以字段越多，写入的时候占用的资源就越多，相同的 index buffer 能存储的数据条数越少。&lt;/p&gt;
+&lt;p&gt;这也和对ES的应用方式有关，在实践中，先利用ES检索出文档id，之后根据id从原始数据源MySQL中获取文档数据。&lt;/p&gt;
+&lt;h3 id=&#34;不需要的搜索的字段不要索引&#34;&gt;不需要的搜索的字段不要索引&lt;/h3&gt;
+&lt;p&gt;不需要搜索的字段，如果还是需要同步到es中，那么可以将其指定为非搜索字段。将字段的Index属性设置为false即可，每个字段都会有该属性。可以降低es写入时的处理逻辑。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;PUT&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;myindex&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;nt&#34;&gt;&amp;#34;mappings&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nt&#34;&gt;&amp;#34;properties&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nt&#34;&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;nt&#34;&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nt&#34;&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nt&#34;&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nt&#34;&gt;&amp;#34;index&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;结构扁平化&#34;&gt;结构扁平化&lt;/h3&gt;
+&lt;p&gt;&lt;font style=&#34;color:rgb(51, 51, 51);&#34;&gt;尽量减少 object 类型的使用，更建议将数据扁平化。越是复杂的数据结构，系统要处理的事情就越多，写入就越慢。而且 nested、parent-child 等数据类型，在查询时候性能也很差。&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&#34;常见场景应用字段类型&#34;&gt;常见场景应用字段类型&lt;/h2&gt;
+&lt;p&gt;对于业务系统来说，设计表的字段的场景不是很多，会有一些常见的场景。这里列一些常见场景设计的字段，以及对应的es数据类型。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;场景值&lt;/th&gt;
+&lt;th&gt;字段类型&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;id值、状态枚举、类型枚举&lt;/td&gt;
+&lt;td&gt;keyword&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;日期、时间、时间戳等&lt;/td&gt;
+&lt;td&gt;date&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;价格（转成分存储）&lt;/td&gt;
+&lt;td&gt;long&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;日期时间范围（常见预约时间等场景）&lt;/td&gt;
+&lt;td&gt;date_range&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;短字符（如名称等like查询场景）&lt;/td&gt;
+&lt;td&gt;wildcard&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这里比较特别的就是使用wildcard类型，来解决模糊匹配的场景，对应的就是SQL中的like。该数据类型是7.9版本提供的，对于wildcard类型的性能问题可以参考：&lt;a class=&#34;link&#34; href=&#34;https://cloud.tencent.com/developer/article/2369990&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Elasticsearch 查询革新：探索 Wildcard 类型的高效模糊匹配策略&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
+&lt;p&gt;当前对于ES的应用，还是处于比较简单的水平，解决一些复杂查询和聚合查询的场景，缓解MySQL的压力。查询条件也是基本和MySQL区别不是太大，大都是等值、范围、like等。
+而对于ES擅长的全文搜索、文档评分等功能，当前业务场景并未使用过。等待后续继续探索。&lt;/p&gt;
+&lt;h2 id=&#34;附录&#34;&gt;附录&lt;/h2&gt;
+&lt;h3 id=&#34;参考&#34;&gt;参考&lt;/h3&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.itshujia.com/read/elasticsearch/374.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;ES小册：35.唯快不破：写调优&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://cloud.tencent.com/developer/article/2369990&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Elasticsearch 查询革新：探索 Wildcard 类型的高效模糊匹配策略&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

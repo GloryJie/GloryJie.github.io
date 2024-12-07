@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='封面为《不良人》第六季中的尸祖降臣 ES常见的应用场景就是搜索，大多数业务系统的数据迁移到ES后，大都是等值、范围、like等，并未使用到ma'>
+<title>Es应用实践指南</title>
+
+<link rel='canonical' href='https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/'>
+
+<link rel="stylesheet" href="/scss/style.min.abbd69b2908fdfcd5179898beaafd374514a86538d81639ddd2c58c06ae54e40.css"><meta property='og:title' content='Es应用实践指南'>
+<meta property='og:description' content='封面为《不良人》第六季中的尸祖降臣 ES常见的应用场景就是搜索，大多数业务系统的数据迁移到ES后，大都是等值、范围、like等，并未使用到ma'>
+<meta property='og:url' content='https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/'>
+<meta property='og:site_name' content='CoderJie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='mapping设计' /><meta property='article:tag' content='应用和ES交互' /><meta property='article:published_time' content='2024-12-07T11:08:38&#43;08:00'/><meta property='article:modified_time' content='2024-12-07T11:08:38&#43;08:00'/><meta property='og:image' content='https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover.jpeg' />
+<meta name="twitter:title" content="Es应用实践指南">
+<meta name="twitter:description" content="封面为《不良人》第六季中的尸祖降臣 ES常见的应用场景就是搜索，大多数业务系统的数据迁移到ES后，大都是等值、范围、like等，并未使用到ma"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://gloryjie.github.io/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover.jpeg' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huee03e448da6b62223416781d43eecaa1_108303_300x0_resize_q75_box.jpg" width="300"
+                            height="261" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">CoderJie</a></h1>
+            <h2 class="site-description">记录和分享生活</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/GloryJie'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/categories/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                
+                <span>分类</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/tags/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tag" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4" />
+  <circle cx="9" cy="9" r="2" />
+</svg>
+
+
+
+                
+                <span>标签</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于我</span>
+            </a>
+        </li>
+        
+    </ol>
+    <div class="menu-bottom-section">
+        <ol class="menu">
+
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </ol>
+    </div>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#业务服务和es的交互方式">业务服务和ES的交互方式</a>
+      <ol>
+        <li><a href="#排序问题">排序问题</a></li>
+      </ol>
+    </li>
+    <li><a href="#mapping设计">mapping设计</a>
+      <ol>
+        <li><a href="#禁用dynamic-mapping">禁用Dynamic Mapping</a></li>
+        <li><a href="#选择合适的数据类型">选择合适的数据类型</a></li>
+        <li><a href="#字段尽量少">字段尽量少</a></li>
+        <li><a href="#不需要的搜索的字段不要索引">不需要的搜索的字段不要索引</a></li>
+        <li><a href="#结构扁平化">结构扁平化</a></li>
+      </ol>
+    </li>
+    <li><a href="#常见场景应用字段类型">常见场景应用字段类型</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#附录">附录</a>
+      <ol>
+        <li><a href="#参考">参考</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/">
+                <img src="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover_hu02aa61ae1d9de35cbe238d2676170cb9_782219_800x0_resize_q75_box.jpeg"
+                        srcset="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover_hu02aa61ae1d9de35cbe238d2676170cb9_782219_800x0_resize_q75_box.jpeg 800w, /p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/cover_hu02aa61ae1d9de35cbe238d2676170cb9_782219_1600x0_resize_q75_box.jpeg 1600w"
+                        width="800" 
+                        height="450" 
+                        loading="lazy"
+                        alt="Featured image of post Es应用实践指南" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" >
+                中间件
+            </a>
+        
+            <a href="/categories/elasticsearch/" >
+                Elasticsearch
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/">Es应用实践指南</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-12-07</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <blockquote>
+<p>封面为《不良人》第六季中的尸祖降臣</p>
+</blockquote>
+<p>ES常见的应用场景就是搜索，大多数业务系统的数据迁移到ES后，大都是等值、范围、like等，并未使用到match查询，相当于把ES搜索当做MySQL来使用。本文不会涉及到分词、搜索打分等场景，更倾向于常用数据的搜索。</p>
+<h2 id="业务服务和es的交互方式">业务服务和ES的交互方式</h2>
+<p>如何使用ES，会影响到Mapping的设计原则。在实践过程中，仅仅是把ES当做ID的筛选器。</p>
+<ul>
+<li>在数据同步阶段，只把需要搜索的字段同步到es中，降低单个文档的大小</li>
+<li>搜索阶段，通过es进行搜索，查询出id的集合，之后通过该id集合从MySQL中获取原始的数据源</li>
+</ul>
+<p>流程的示意图如下</p>
+<p><img src="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92.png"
+	width="1040"
+	height="748"
+	srcset="/p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92_hu93fbb872bbcefb1fb735f657a8a7c353_52174_480x0_resize_box_3.png 480w, /p/es%E5%BA%94%E7%94%A8%E5%AE%9E%E8%B7%B5/es%E4%BA%A4%E4%BA%92_hu93fbb872bbcefb1fb735f657a8a7c353_52174_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="应用和ES的交互"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="139"
+		data-flex-basis="333px"
+	
+></p>
+<p>ES的搜索流程中，有两个阶段：search、fetch。</p>
+<ul>
+<li>search阶段是从分片中搜索并获取相应文档id和其排序数据，在协调节点处理，生成结果集id</li>
+<li>fetch阶段是将对应的结果集id，从id对应分片中获取实际的文档数据</li>
+</ul>
+<p>从上述流程中，可以看到，<strong>只使用到了search阶段，而fetch阶段替换成业务服务自行获取。</strong></p>
+<p>这个<u><strong>方案的优点就是数据实时性高，可以规避ES数据滞后问题。</strong></u></p>
+<h3 id="排序问题">排序问题</h3>
+<p>根据id批量从MySQL中获取数据，返回的顺序会错乱，所以需要根据原id的顺序进行调整即可。</p>
+<p><strong><u></u></strong></p>
+<h2 id="mapping设计">mapping设计</h2>
+<p>mapping设计好，可以减少不必要的计算和写入，降低索引大小。</p>
+<h3 id="禁用dynamic-mapping">禁用Dynamic Mapping</h3>
+<p>动态映射在创建索引时有三种配置值，<u><strong>至少设置为false。</strong></u></p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>可选值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>true</td>
+<td>自动添加到mapping中，并且支持索引和搜索</td>
+</tr>
+<tr>
+<td>runtime</td>
+<td>新字段将会被作为runtime类型的filed</td>
+</tr>
+<tr>
+<td>false</td>
+<td>不会添加到mapping中，不支持索引和搜索。不过仍然会保存在_source中。</td>
+</tr>
+<tr>
+<td>strict</td>
+<td>如果发现新的field，会抛出异常</td>
+</tr>
+</tbody>
+</table></div>
+<p>必须明确每个字段的数据类型，和其对应的属性配置，就类似于SQL的建表，严格确定结构。对于字段数据类型和其支持的属性配置，需要对ES有一定的熟悉程度，可以参考es的文档来进行设置，一般来说明确数据类型即可。</p>
+<h3 id="选择合适的数据类型">选择合适的数据类型</h3>
+<p>明确数据类型的时候，需要选择合适的数据类型，例如字符串类型的id、状态枚举等明确的值，选择keyword而不是text。</p>
+<h3 id="字段尽量少">字段尽量少</h3>
+<p>字段尽可能少，最好做到只保留需要参与检索的字段。因为es需要提前构建倒排索引，所以字段越多，写入的时候占用的资源就越多，相同的 index buffer 能存储的数据条数越少。</p>
+<p>这也和对ES的应用方式有关，在实践中，先利用ES检索出文档id，之后根据id从原始数据源MySQL中获取文档数据。</p>
+<h3 id="不需要的搜索的字段不要索引">不需要的搜索的字段不要索引</h3>
+<p>不需要搜索的字段，如果还是需要同步到es中，那么可以将其指定为非搜索字段。将字段的Index属性设置为false即可，每个字段都会有该属性。可以降低es写入时的处理逻辑。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">PUT</span> <span class="err">myindex</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;mappings&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="p">{</span> <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;index&#34;</span><span class="p">:</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="结构扁平化">结构扁平化</h3>
+<p><font style="color:rgb(51, 51, 51);">尽量减少 object 类型的使用，更建议将数据扁平化。越是复杂的数据结构，系统要处理的事情就越多，写入就越慢。而且 nested、parent-child 等数据类型，在查询时候性能也很差。</font></p>
+<h2 id="常见场景应用字段类型">常见场景应用字段类型</h2>
+<p>对于业务系统来说，设计表的字段的场景不是很多，会有一些常见的场景。这里列一些常见场景设计的字段，以及对应的es数据类型。</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>场景值</th>
+<th>字段类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id值、状态枚举、类型枚举</td>
+<td>keyword</td>
+</tr>
+<tr>
+<td>日期、时间、时间戳等</td>
+<td>date</td>
+</tr>
+<tr>
+<td>价格（转成分存储）</td>
+<td>long</td>
+</tr>
+<tr>
+<td>日期时间范围（常见预约时间等场景）</td>
+<td>date_range</td>
+</tr>
+<tr>
+<td>短字符（如名称等like查询场景）</td>
+<td>wildcard</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里比较特别的就是使用wildcard类型，来解决模糊匹配的场景，对应的就是SQL中的like。该数据类型是7.9版本提供的，对于wildcard类型的性能问题可以参考：<a class="link" href="https://cloud.tencent.com/developer/article/2369990"  target="_blank" rel="noopener"
+    >Elasticsearch 查询革新：探索 Wildcard 类型的高效模糊匹配策略</a>。</p>
+<h2 id="总结">总结</h2>
+<p>当前对于ES的应用，还是处于比较简单的水平，解决一些复杂查询和聚合查询的场景，缓解MySQL的压力。查询条件也是基本和MySQL区别不是太大，大都是等值、范围、like等。
+而对于ES擅长的全文搜索、文档评分等功能，当前业务场景并未使用过。等待后续继续探索。</p>
+<h2 id="附录">附录</h2>
+<h3 id="参考">参考</h3>
+<p><a class="link" href="https://www.itshujia.com/read/elasticsearch/374.html"  target="_blank" rel="noopener"
+    >ES小册：35.唯快不破：写调优</a></p>
+<p><a class="link" href="https://cloud.tencent.com/developer/article/2369990"  target="_blank" rel="noopener"
+    >Elasticsearch 查询革新：探索 Wildcard 类型的高效模糊匹配策略</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/mapping%E8%AE%BE%E8%AE%A1/">Mapping设计</a>
+        
+            <a href="/tags/%E5%BA%94%E7%94%A8%E5%92%8Ces%E4%BA%A4%E4%BA%92/">应用和ES交互</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 CoderJie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.23.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
